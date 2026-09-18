@@ -97,17 +97,21 @@ Customers build orders which server-side calculates tax and shipping. Upon creat
 
 ### Products & Inventory
 - `GET /api/v1/products` - List products
-- `POST /api/v1/inventory/receive` - Stock in
-- `POST /api/v1/inventory/reserve` - Reserve stock
+### Analytics & Reports
+- `GET /api/v1/analytics/dashboard` - Enterprise metrics summary & order state counts
+- `GET /api/v1/analytics/export/low-stock-csv` - Low stock CSV report download
+- `GET /api/v1/analytics/export/orders-csv` - Customer orders CSV report download
+- `GET /api/v1/analytics/export/inventory-csv` - Full multi-warehouse stock ledger CSV download
 
 ## 12. How to run backend
-Prerequisites: Java 21, MySQL 8, Maven.
+Prerequisites: Java 21, Oracle Database (19c / 21c / 23c / XE), Maven.
 
-1. Ensure MySQL is running on `localhost:3306` with a database named `enterprise_order_db`.
-2. Set environment variables (see section 14).
-3. From the `backend` directory, run:
+1. Ensure Oracle Database is running (e.g. `localhost:1521/FREEPDB1`).
+2. Run database schema initialization using `database/oracle_schema.sql`.
+3. Set environment variables (see section 14).
+4. From the `backend` directory, run:
 ```bash
-./mvnw spring-boot:run
+./mvnw spring-boot:run -Dspring-boot.run.profiles=prod
 ```
 
 ## 13. How to run frontend
@@ -126,20 +130,23 @@ npm run dev
 Access the application at `http://localhost:5173`.
 
 ## 14. Environment Variables
-### Backend (`application-dev.yml` / system variables)
+### Backend Production (`application-prod.yml` / system variables)
 ```properties
 SERVER_PORT=8081
-SPRING_PROFILES_ACTIVE=dev
-DB_URL=jdbc:mysql://localhost:3306/enterprise_order_db
-DB_USERNAME=root
-DB_PASSWORD=your_mysql_password
+SPRING_PROFILES_ACTIVE=prod
+DB_HOST=oracle-db-host.example.com
+DB_PORT=1521
+DB_SERVICE_NAME=FREEPDB1
+DB_USERNAME=ENTERPRISE_DB
+DB_PASSWORD=your_oracle_password
 JWT_SECRET=your_super_secret_jwt_signing_key_here
+FRONTEND_URL=https://your-deployed-frontend.example.com
 ```
 
 ### Frontend (`frontend/.env`)
 Create a `.env` file from `.env.example`:
 ```properties
-VITE_API_BASE_URL=http://localhost:8081/api/v1
+VITE_API_BASE_URL=https://your-deployed-backend.example.com/api/v1
 ```
 
 ## 15. Testing
