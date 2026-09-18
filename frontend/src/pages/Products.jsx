@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { productApi } from '../api/productApi';
 import { orderApi } from '../api/orderApi';
+import { warehouseApi } from '../api/warehouseApi';
 import { Badge } from '../components/common/Badge';
 import { Pagination } from '../components/common/Pagination';
 import { LoadingPage } from '../components/common/Spinner';
 import { Modal } from '../components/common/Modal';
 import { useToast } from '../components/common/Toast';
-import { ShoppingCart, Search } from 'lucide-react';
+import { ShoppingCart, Search, Building2 } from 'lucide-react';
 
 export const Products = () => {
   const { addToast } = useToast();
   const [products, setProducts] = useState([]);
+  const [warehouses, setWarehouses] = useState([]);
+  const [selectedWarehouseId, setSelectedWarehouseId] = useState('');
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
   const [page, setPage] = useState(0);
@@ -44,8 +47,24 @@ export const Products = () => {
     }
   };
 
+  const fetchWarehouses = async () => {
+    try {
+      const data = await warehouseApi.getWarehouses();
+      const list = Array.isArray(data) ? data : (data.content || []);
+      setWarehouses(list);
+      if (list.length > 0) {
+        // Default to first active warehouse or first warehouse
+        const activeWh = list.find(w => w.status === 'ACTIVE' || w.active) || list[0];
+        setSelectedWarehouseId(activeWh.id);
+      }
+    } catch (err) {
+      console.error('Failed to load warehouses in Products', err);
+    }
+  };
+
   useEffect(() => {
     fetchProducts();
+    fetchWarehouses();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
@@ -58,17 +77,25 @@ export const Products = () => {
   const handleOpenOrder = (product) => {
     setOrderModal({ open: true, product });
     setOrderQuantity(1);
+    if (!selectedWarehouseId && warehouses.length > 0) {
+      const activeWh = warehouses.find(w => w.status === 'ACTIVE' || w.active) || warehouses[0];
+      setSelectedWarehouseId(activeWh.id);
+    }
   };
 
   const handlePlaceOrder = async () => {
     if (!orderModal.product || orderQuantity < 1) return;
+    if (!selectedWarehouseId) {
+      addToast('Please select a fulfillment warehouse', 'warning');
+      return;
+    }
     try {
       setSubmittingOrder(true);
       const payload = {
         items: [
           {
             productId: orderModal.product.id,
-            warehouseId: 1, // Default Central Warehouse
+            warehouseId: Number(selectedWarehouseId),
             quantity: Number(orderQuantity),
           },
         ],
@@ -206,6 +233,28 @@ export const Products = () => {
                   ${(orderModal.product.price * orderQuantity).toFixed(2)}
                 </span>
               </div>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Building2 size={15} color="var(--accent-primary)" /> Fulfillment Warehouse
+              </label>
+              <select
+                className="form-input"
+                value={selectedWarehouseId}
+                onChange={(e) => setSelectedWarehouseId(e.target.value)}
+                required
+              >
+                {warehouses.length === 0 ? (
+                  <option value="">No warehouses available</option>
+                ) : (
+                  warehouses.map((w) => (
+                    <option key={w.id} value={w.id}>
+                      {w.name} ({w.code || `#${w.id}`}) — {w.status || (w.active ? 'ACTIVE' : 'INACTIVE')}
+                    </option>
+                  ))
+                )}
+              </select>
             </div>
 
             <div className="form-group">

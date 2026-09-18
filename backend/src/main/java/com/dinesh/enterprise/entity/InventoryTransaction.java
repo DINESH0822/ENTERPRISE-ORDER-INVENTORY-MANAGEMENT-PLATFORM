@@ -32,7 +32,7 @@ import java.time.LocalDateTime;
     name = "inventory_transactions",
     indexes = {
         @Index(name = "idx_inv_tx_inventory_id", columnList = "inventory_id"),
-        @Index(name = "idx_inv_tx_type", columnList = "type"),
+        @Index(name = "idx_inv_tx_type", columnList = "transaction_type"),
         @Index(name = "idx_inv_tx_reference", columnList = "reference_type, reference_id")
     }
 )
@@ -59,7 +59,7 @@ public class InventoryTransaction {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false, length = 30)
+    @Column(name = "transaction_type", nullable = false, length = 30)
     private InventoryTransactionType type;
 
     @NotNull

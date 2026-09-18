@@ -1,8 +1,8 @@
 import axiosClient from './axiosClient';
 
 export const warehouseApi = {
-  getWarehouses: async () => {
-    const response = await axiosClient.get('/warehouses');
+  getWarehouses: async (params = {}) => {
+    const response = await axiosClient.get('/warehouses', { params });
     return response.data;
   },
 
@@ -18,6 +18,11 @@ export const warehouseApi = {
 
   updateWarehouse: async (id, warehouseData) => {
     const response = await axiosClient.put(`/warehouses/${id}`, warehouseData);
+    return response.data;
+  },
+
+  updateWarehouseStatus: async (id, status) => {
+    const response = await axiosClient.patch(`/warehouses/${id}/status`, { status });
     return response.data;
   },
 };
