@@ -1,0 +1,24 @@
+spring:
+  config:
+    activate:
+      on-profile: test
+
+  jwt:
+    secret: d2948e65a0b63c76d2994f1345d8b671a938c52084c68832a510de3e5b32948e
+
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:enterprise_order_test_db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL
+    username: sa
+    password:
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+
+logging:
+  level:
+    root: WARN
+    com.dinesh.enterprise: INFO

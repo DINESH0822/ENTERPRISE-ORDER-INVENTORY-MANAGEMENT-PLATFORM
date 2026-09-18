@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: enterprise-order-inventory-platform
+  profiles:
+    active: dev
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          batch_size: 25
+          order_inserts: true
+          order_updates: true
+
+server:
+  port: ${SERVER_PORT:8081}
+
+# Spring Boot Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: when_authorized
+      probes:
+        enabled: true
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:d2948e65a0b63c76d2994f1345d8b671a938c52084c68832a510de3e5b32948e}
+  expiration: ${JWT_EXPIRATION_MS:86400000} # 24 Hours in ms
+  issuer: enterprise-order-inventory-platform
+
