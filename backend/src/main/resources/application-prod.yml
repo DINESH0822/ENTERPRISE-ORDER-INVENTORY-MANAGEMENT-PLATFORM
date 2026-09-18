@@ -3,26 +3,38 @@ spring:
     activate:
       on-profile: prod
 
+  # ===========================================================
+  # Oracle Database — supports both:
+  #   1. Oracle Cloud Autonomous DB (wallet TCPS connection)
+  #      DB_URL=jdbc:oracle:thin:@(description=(address=(protocol=tcps)(host=...)(port=1522))(connect_data=(service_name=...)))
+  #   2. Standard Oracle XE / TCP connection
+  #      DB_URL=jdbc:oracle:thin:@//host:1521/XE
+  # ===========================================================
   datasource:
     driver-class-name: oracle.jdbc.OracleDriver
-    url: ${DB_URL:jdbc:oracle:thin:@//${DB_HOST}:${DB_PORT:1521}/${DB_SERVICE_NAME}}
+    url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     hikari:
-      maximum-pool-size: 20
-      minimum-idle: 5
+      maximum-pool-size: 10
+      minimum-idle: 2
       idle-timeout: 300000
       connection-timeout: 30000
-      max-lifetime: 1800000
+      max-lifetime: 1200000
+      connection-test-query: SELECT 1 FROM DUAL
+      pool-name: EnterpriseHikariPool
 
   jpa:
-    database-platform: org.hibernate.dialect.OracleDialect
+    database-platform: com.dinesh.enterprise.config.CustomOracleDialect
     show-sql: false
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     properties:
       hibernate.format_sql: false
-      hibernate.dialect.oracle.legacy_limit: true
+
+# Railway dynamically injects $PORT — Spring picks it up here
+server:
+  port: ${PORT:8080}
 
 jwt:
   secret: ${JWT_SECRET}
@@ -34,3 +46,4 @@ logging:
   level:
     root: WARN
     com.dinesh.enterprise: INFO
+    org.hibernate.SQL: OFF

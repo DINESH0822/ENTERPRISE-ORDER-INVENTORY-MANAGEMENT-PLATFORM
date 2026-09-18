@@ -125,21 +125,37 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        List<String> origins = new ArrayList<>(List.of("http://localhost:5173", "http://localhost:3000", "http://127.0.0.1:5173"));
+
+        // Base allowed origins for local development
+        List<String> patterns = new ArrayList<>(List.of(
+                "http://localhost:5173",
+                "http://localhost:3000",
+                "http://127.0.0.1:5173",
+                // Vercel production & preview deployments
+                "https://*.vercel.app"
+        ));
+
+        // Append any additional origins from FRONTEND_URL env var (comma-separated)
+        // e.g. FRONTEND_URL=https://enterprise-platform.vercel.app
         if (frontendUrl != null && !frontendUrl.isBlank()) {
             for (String url : frontendUrl.split(",")) {
                 String trimmed = url.trim();
-                if (!trimmed.isEmpty() && !origins.contains(trimmed)) {
-                    origins.add(trimmed);
+                if (!trimmed.isEmpty() && !patterns.contains(trimmed)) {
+                    patterns.add(trimmed);
                 }
             }
         }
-        configuration.setAllowedOrigins(origins);
+
+        // Use allowedOriginPatterns (supports wildcards AND allowCredentials=true)
+        configuration.setAllowedOriginPatterns(patterns);
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 }
+

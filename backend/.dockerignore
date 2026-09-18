@@ -1,0 +1,29 @@
+# Git
+.git
+.gitignore
+
+# Maven target directory (built inside Docker)
+target/
+
+# IDE files
+.idea/
+*.iml
+*.iws
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Spring Boot local config overrides
+*.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+
+# Test reports
+test-results/
+surefire-reports/
