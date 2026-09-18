@@ -21,8 +21,8 @@ spring:
     hibernate:
       ddl-auto: validate
     properties:
-      hibernate:
-        format_sql: false
+      hibernate.format_sql: false
+      hibernate.dialect.oracle.legacy_limit: true
 
 jwt:
   secret: ${JWT_SECRET}
