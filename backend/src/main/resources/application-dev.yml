@@ -4,10 +4,10 @@ spring:
       on-profile: dev
 
   datasource:
-    driver-class-name: oracle.jdbc.OracleDriver
-    url: jdbc:oracle:thin:@//${DB_HOST:localhost}:${DB_PORT:1521}/${DB_SERVICE_NAME:XE}
-    username: ${DB_USERNAME:ENTERPRISE_DB}
-    password: ${DB_PASSWORD:Enterprise2026}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:enterprise_order_db}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
     hikari:
       maximum-pool-size: 10
       minimum-idle: 5
@@ -16,14 +16,14 @@ spring:
       max-lifetime: 1200000
 
   jpa:
-    database-platform: com.dinesh.enterprise.config.CustomOracleDialect
+    database-platform: org.hibernate.dialect.MySQLDialect
     show-sql: true
     hibernate:
       ddl-auto: update
     properties:
-      hibernate.format_sql: true
-      hibernate.use_sql_comments: true
-      hibernate.dialect.oracle.legacy_limit: true
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
 
 logging:
   level:

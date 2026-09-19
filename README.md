@@ -104,10 +104,10 @@ Customers build orders which server-side calculates tax and shipping. Upon creat
 - `GET /api/v1/analytics/export/inventory-csv` - Full multi-warehouse stock ledger CSV download
 
 ## 12. How to run backend
-Prerequisites: Java 21, Oracle Database (19c / 21c / 23c / XE), Maven.
+Prerequisites: Java 21, MySQL Database (8.0+), Maven.
 
-1. Ensure Oracle Database is running (e.g. `localhost:1521/FREEPDB1`).
-2. Run database schema initialization using `database/oracle_schema.sql`.
+1. Ensure MySQL Database is running (e.g. `localhost:3306`).
+2. Run database schema initialization using `database/mysql_schema.sql`.
 3. Set environment variables (see section 14).
 4. From the `backend` directory, run:
 ```bash
@@ -134,11 +134,11 @@ Access the application at `http://localhost:5173`.
 ```properties
 SERVER_PORT=8081
 SPRING_PROFILES_ACTIVE=prod
-DB_HOST=oracle-db-host.example.com
-DB_PORT=1521
-DB_SERVICE_NAME=FREEPDB1
-DB_USERNAME=ENTERPRISE_DB
-DB_PASSWORD=your_oracle_password
+DB_HOST=mysql-db-host.example.com
+DB_PORT=3306
+DB_NAME=enterprise_db
+DB_USERNAME=your_db_username
+DB_PASSWORD=your_db_password
 JWT_SECRET=your_super_secret_jwt_signing_key_here
 FRONTEND_URL=https://your-deployed-frontend.example.com
 ```

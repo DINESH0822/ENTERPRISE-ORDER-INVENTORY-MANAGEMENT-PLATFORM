@@ -4,15 +4,11 @@ spring:
       on-profile: prod
 
   # ===========================================================
-  # Oracle Database — supports both:
-  #   1. Oracle Cloud Autonomous DB (wallet TCPS connection)
-  #      DB_URL=jdbc:oracle:thin:@(description=(address=(protocol=tcps)(host=...)(port=1522))(connect_data=(service_name=...)))
-  #   2. Standard Oracle XE / TCP connection
-  #      DB_URL=jdbc:oracle:thin:@//host:1521/XE
+  # MySQL Database Connection
   # ===========================================================
   datasource:
-    driver-class-name: oracle.jdbc.OracleDriver
-    url: ${DB_URL}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     hikari:
@@ -21,16 +17,17 @@ spring:
       idle-timeout: 300000
       connection-timeout: 30000
       max-lifetime: 1200000
-      connection-test-query: SELECT 1 FROM DUAL
+      connection-test-query: SELECT 1
       pool-name: EnterpriseHikariPool
 
   jpa:
-    database-platform: com.dinesh.enterprise.config.CustomOracleDialect
+    database-platform: org.hibernate.dialect.MySQLDialect
     show-sql: false
     hibernate:
       ddl-auto: update
     properties:
-      hibernate.format_sql: false
+      hibernate:
+        format_sql: false
 
 # Railway dynamically injects $PORT — Spring picks it up here
 server:

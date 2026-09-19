@@ -11,9 +11,9 @@
 - **STATUS**: Executable Fat JAR generated (`backend/target/enterprise-order-inventory-platform-1.0.0-SNAPSHOT.jar`)
 
 ### DATABASE
-- **Oracle**: Oracle Database 19c / 21c / 23c / Autonomous DB / XE
-- **STATUS**: Configured with `oracle.jdbc.OracleDriver` & `org.hibernate.dialect.OracleDialect`
-- **Schema Reference**: `database/oracle_schema.sql` (Hibernate DDL Auto: `validate`)
+- **MySQL**: MySQL Database 8.0+
+- **STATUS**: Configured with `com.mysql.cj.jdbc.Driver` & `org.hibernate.dialect.MySQLDialect`
+- **Schema Reference**: `database/mysql_schema.sql` (Hibernate DDL Auto: `validate`)
 
 ### HEALTH
 - **Actuator**: `/actuator/health`
